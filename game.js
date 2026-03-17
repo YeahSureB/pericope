@@ -368,12 +368,20 @@ function handleAnswer(value) {
       animateCard('correct');
     }
   } else {
-    // Wrong answer
+    // Wrong answer — mark missed level, grey out just this one button in-place
     if (q.firstMissedLevelIdx === -1) {
       q.firstMissedLevelIdx = q.currentLevelIdx;
     }
     q.greyedButtons.add(value);
-    renderButtons(); // re-render to grey out
+
+    // Find and mutate just the tapped button — no full re-render, no re-animation
+    const btn = document.querySelector(`#button-panel .answer-btn[data-value="${CSS.escape(value)}"]`);
+    if (btn) {
+      btn.classList.add('greyed');
+      btn.disabled = true;
+      btn.removeEventListener('click', btn._clickHandler);
+    }
+
     animateCard('wrong');
   }
 }
@@ -553,7 +561,9 @@ function renderButtons() {
       el.classList.add('greyed');
       el.disabled = true;
     } else {
-      el.addEventListener('click', () => handleAnswer(btn.value));
+      const handler = () => handleAnswer(btn.value);
+      el._clickHandler = handler;
+      el.addEventListener('click', handler);
     }
 
     grid.appendChild(el);
