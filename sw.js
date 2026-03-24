@@ -3,7 +3,7 @@
    Service worker: cache-first for all app assets.
    ============================================================= */
 
-const CACHE_NAME = 'pericope-v1';
+const CACHE_NAME = 'pericope-v2';
 const ASSETS = [
   '/',
   '/index.html',
